@@ -99,6 +99,8 @@ extern __declspec(dllexport) BOOL REFLECTIVE_FUNCTION_NAME() {
         if (!(hModule = LoadLibraryA_((LPCSTR)(NewDllBaseAddr + pDllDescriptor->Name))))
             return FALSE;
 
+		ThunkSize = 0;
+		
         while (TRUE) {
             FunctionAddr = 0;
             pNameTableData = (PIMAGE_THUNK_DATA)(NewDllBaseAddr + pDllDescriptor->OriginalFirstThunk + ThunkSize);
