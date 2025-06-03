@@ -111,7 +111,7 @@ extern __declspec(dllexport) BOOL REFLECTIVE_FUNCTION_NAME() {
 
             if (pNameTableData && (pNameTableData->u1.Ordinal & IMAGE_ORDINAL_FLAG)) {
                 PIMAGE_NT_HEADERS _pNtHeader = (PIMAGE_NT_HEADERS)((ULONG_PTR)hModule + ((PIMAGE_DOS_HEADER)((ULONG_PTR)hModule))->e_lfanew);
-                if (pNtHeader->Signature != IMAGE_NT_SIGNATURE)
+                if (_pNtHeader->Signature != IMAGE_NT_SIGNATURE)
                     return FALSE;
 
                 pExportDirectory = (PIMAGE_EXPORT_DIRECTORY)((ULONG_PTR)hModule + _pNtHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
