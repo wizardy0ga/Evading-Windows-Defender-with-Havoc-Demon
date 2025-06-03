@@ -158,7 +158,7 @@ extern __declspec(dllexport) BOOL REFLECTIVE_FUNCTION_NAME() {
             default:
                 return FALSE;
             }
-            BaseRelocEntry += sizeof(BASE_RELOC_ENTRY);
+            (SIZE_T)BaseRelocEntry += sizeof(BASE_RELOC_ENTRY);
         }
         BaseRelocation = (PIMAGE_BASE_RELOCATION)BaseRelocEntry;
     }
