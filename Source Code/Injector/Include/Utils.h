@@ -96,7 +96,7 @@ PBYTE DownloadData(IN PCHAR Url, OUT DWORD* pSize) {
 
 	HINTERNET hInternet = InternetOpenA_(0, 0, 0, 0, 0);
 	if (hInternet) {
-		HINTERNET hUrl = InternetOpenUrlA_(hInternet, (LPCTSTR)Url, 0, 0, INTERNET_FLAG_NO_CACHE_WRITE, 0);
+		HINTERNET hUrl = InternetOpenUrlA_(hInternet, (LPCSTR)Url, 0, 0, INTERNET_FLAG_NO_CACHE_WRITE, 0);
 		if (hUrl) {
 			PBYTE pData = (PBYTE)LocalAlloc_(LPTR, CHUNK_SIZE);
 			PBYTE pTemp = (PBYTE)LocalAlloc_(LPTR, CHUNK_SIZE);
